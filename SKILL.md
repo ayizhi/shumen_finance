@@ -13,6 +13,8 @@ It always calls `https://tianshan-api.kungfu-trader.com`.
 It runs local `.mjs` flows with `node`.
 Source repo: `https://github.com/ayizhi/shumen_finance`.
 At runtime it only reads bundled prompt/reference assets from this skill repo and does not write local files.
+The outbound network surface is intentionally fixed to that single base URL and is not user-configurable.
+It does not shell out to subprocesses, install dependencies, or fetch additional code at runtime.
 
 Do not use this skill with secrets, personal data, or other sensitive user content.
 User requests and derived analysis context may be transmitted to the upstream Tianshan API.
