@@ -10,7 +10,7 @@ Use it to decide:
 - which parameters are intentionally hidden
 - what output shape to expect
 
-Use [SKILL.md](/Users/zhangyizhi/Project/tianshan-quant-skills/shumen_finance/SKILL.md) for high-level user intent routing first.
+Use [SKILL.md](../../SKILL.md) for high-level user intent routing first.
 Use this file only after the intent has already been determined.
 
 ## Global Rules

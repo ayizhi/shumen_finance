@@ -9,6 +9,11 @@ metadata: {"openclaw":{"skillKey":"shumen_finance","requires":{"bins":["node"]}}
 
 This skill is a deterministic mainland China A-share wrapper around the Tianshan APIs.
 It always calls `https://tianshan-api.kungfu-trader.com`.
+It runs local `.mjs` flows with `node`.
+Source repo: `https://github.com/ayizhi/shumen_finance`.
+
+Do not use this skill with secrets, personal data, or other sensitive user content.
+User requests and derived analysis context may be transmitted to the upstream Tianshan API.
 
 Treat this file as the high-level routing guide.
 Do not treat it as an API catalog.
@@ -145,7 +150,7 @@ Do not generate or expose these from the model side:
 
 The internal deterministic product contract lives here:
 
-- [data_products.md](/Users/zhangyizhi/Project/tianshan-quant-skills/shumen_finance/references/schemas/data_products.md)
+- [data_products.md](references/schemas/data_products.md)
 
 Use that file only when you need exact internal product names, allowed parameter shapes, or output keys.
 Do not dump that whole catalog into the user-facing reasoning path by default.
@@ -154,12 +159,15 @@ Do not dump that whole catalog into the user-facing reasoning path by default.
 
 Documented research methods live here:
 
-- [README.md](/Users/zhangyizhi/Project/tianshan-quant-skills/shumen_finance/references/research-flows/README.md)
-- [stock-analysis](/Users/zhangyizhi/Project/tianshan-quant-skills/shumen_finance/references/research-flows/stock-analysis)
-- [sector-analysis](/Users/zhangyizhi/Project/tianshan-quant-skills/shumen_finance/references/research-flows/sector-analysis)
+- [README.md](references/research-flows/README.md)
+- [stock-analysis](references/research-flows/stock-analysis)
+- [sector-analysis](references/research-flows/sector-analysis)
 
 Use them as methodology references for deep research.
 They are not public CLI entrypoints yet.
+
+Prompt assets are flow-specific.
+Do not mix finance-analysis formatting requirements into movement-analysis outputs, or vice versa.
 
 ## Standard Commands
 

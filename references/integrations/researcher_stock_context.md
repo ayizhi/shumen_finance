@@ -35,11 +35,11 @@ It is not used for:
 ### `/researcher/stock`
 
 Source:
-- [researcher_routes.py](/Users/zhangyizhi/Project/serverless-tianshan-api/src/api/researcher_routes.py#L184)
+- `serverless-tianshan-api/src/api/researcher_routes.py#L184`
 
 Backed by:
-- [get_stock_forecast](/Users/zhangyizhi/Project/serverless-tianshan-api/src/handlers/researcher/score_calculator.py#L864)
-- [get_stock_researchers_scores](/Users/zhangyizhi/Project/serverless-tianshan-api/src/handlers/researcher/score_calculator.py#L257)
+- `serverless-tianshan-api/src/handlers/researcher/score_calculator.py#L864`
+- `serverless-tianshan-api/src/handlers/researcher/score_calculator.py#L257`
 
 Why this is enough:
 

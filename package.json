@@ -1,7 +1,18 @@
 {
   "name": "shumen_finance",
+  "description": "Deterministic mainland China A-share skill for stock snapshots, finance analysis, movement analysis, sector analysis, and news lookup.",
   "private": true,
+  "author": "ayizhi",
+  "homepage": "https://github.com/ayizhi/shumen_finance",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ayizhi/shumen_finance.git"
+  },
+  "license": "UNLICENSED",
   "type": "module",
+  "engines": {
+    "node": ">=22.24.0"
+  },
   "scripts": {
     "check": "find scripts -name '*.mjs' -print0 | xargs -0 -n1 node --check"
   }

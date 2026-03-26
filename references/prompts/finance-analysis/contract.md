@@ -2,7 +2,7 @@
 
 This prompt asset comes from:
 
-- [finance_analysis_prompt.py](/Users/zhangyizhi/Project/serverless-tianshan-api/src/handlers/analyse_diagnosis/prompt/finance_analysis_prompt.py)
+- upstream backend source path `serverless-tianshan-api/src/handlers/analyse_diagnosis/prompt/finance_analysis_prompt.py`
 
 It is stored in this skill repo as pure markdown only.
 
