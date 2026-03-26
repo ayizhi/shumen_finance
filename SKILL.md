@@ -1,13 +1,13 @@
 ---
-name: lushan_finance
-description: Use when the user asks 庐山院财经 (Lushan Finance) for deterministic China A-share / A股 single-stock data, single-sector data, movement tracking, finance report status, finance basic indicators, valuation detail, profit forecast, industry rank, concept tags, money flow, sector candidate lookup, sector constituents, sector performance, finance-analysis context, unusual-movement context, price snapshots, K-line bar series, finance context, holder changes, chip distribution, resistance levels, or important market news.
+name: shumen_finance
+description: Use when the user asks 枢门财经 (ShumenFinance) for deterministic China A-share / A股 single-stock data, single-sector data, movement tracking, finance report status, finance basic indicators, valuation detail, profit forecast, industry rank, concept tags, money flow, sector candidate lookup, sector constituents, sector performance, finance-analysis context, unusual-movement context, price snapshots, K-line bar series, finance context, holder changes, chip distribution, resistance levels, or important market news.
 user-invocable: true
-metadata: {"openclaw":{"skillKey":"lushan_finance","requires":{"bins":["node"]}}}
+metadata: {"openclaw":{"skillKey":"shumen_finance","requires":{"bins":["node"]}}}
 ---
 
-# 庐山院财经 | Lushan Finance
+# 枢门财经 | ShumenFinance
 
-This skill powers 庐山院财经 (Lushan Finance) as a deterministic data-and-analysis wrapper around the Tianshan APIs.
+This skill powers 枢门财经 (ShumenFinance) as a deterministic data-and-analysis wrapper around the Tianshan APIs.
 It is only for mainland China A-shares.
 It always calls `https://tianshan-api.kungfu-trader.com`.
 
@@ -135,6 +135,7 @@ If the user asks for whole-market screening, neither documented methodology appl
 For sector requests, prefer direct `sector_name` first.
 Treat `sector_id` as an internal identifier that should only be reused after the backend has already returned it.
 Only call `resolve_sector` when the sector name is fuzzy, ambiguous, or direct sector lookup fails.
+If the user says a fuzzy theme word such as `算力`, `机器人`, or `AI`, prefer `resolve_sector` first before calling sector detail products.
 
 ## Public Input Contract
 
@@ -198,7 +199,7 @@ node scripts/flows/run_data_request.mjs --product price_snapshot --instrument-na
 ### Direct Sector Data Request
 
 ```bash
-node scripts/flows/run_data_request.mjs --product sector_performance --sector-name 算力 --target-date 20260301
+node scripts/flows/run_data_request.mjs --product sector_performance --sector-name 白酒 --target-date 20260301
 ```
 
 ### Resolve Sector Name
@@ -305,6 +306,7 @@ Use when:
 Important default:
 
 - Server-side default window is the chip-peak path, built around roughly `120` bars unless explicitly overridden
+- This payload is relatively heavy; do not use it when a lighter summary product would answer the question
 
 ### `price_levels`
 
@@ -336,6 +338,11 @@ Use when:
 - The user wants the deterministic context bundle behind unusual movement analysis
 - You need recent trading days, recent prices, long-window highs/lows, support/resistance, and market technical status without building the final prompt package yet
 
+Do not use when:
+
+- The user only wants one raw data product such as price, finance, or money flow
+- The user wants the final prompt package directly; use `movement_analysis` instead
+
 ### `similar_sectors`
 
 Use when:
@@ -349,6 +356,7 @@ Use when:
 
 - The user gives a fuzzy or ambiguous sector / concept / theme name and direct `sector_name` lookup is not reliable
 - You want one best resolved match after a name-based lookup failed
+- The user says a plain theme word like `算力` and you need one backend-resolved sector before calling detail products
 
 ### `sector_constituents`
 
@@ -390,3 +398,8 @@ Use when:
 Use when:
 
 - The user wants the final unusual-movement prompt package, not just its context bundle
+
+Do not use when:
+
+- The user only wants prices, levels, money flow, or finance data
+- The user only wants the pre-analysis context bundle; use `unusual_movement_context`

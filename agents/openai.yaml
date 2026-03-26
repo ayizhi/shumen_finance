@@ -1,4 +1,4 @@
 interface:
-  display_name: "庐山院财经"
-  short_description: "Lushan Finance A股个股、板块与财报分析"
-  default_prompt: "Use $lushan_finance to fetch deterministic China A-share stock or sector data and analysis with 庐山院财经."
+  display_name: "枢门财经"
+  short_description: "ShumenFinance A股个股、板块与财报分析"
+  default_prompt: "Use $shumen_finance to fetch deterministic China A-share stock or sector data and analysis with 枢门财经."

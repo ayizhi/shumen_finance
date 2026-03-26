@@ -4,7 +4,7 @@ This project should only use one researcher route:
 
 - `/researcher/stock`
 
-Nothing else from the researcher module should be integrated into `lushan_finance` for now.
+Nothing else from the researcher module should be integrated into `shumen_finance` for now.
 
 ## Scope Decision
 

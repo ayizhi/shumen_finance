@@ -61,6 +61,7 @@ For `sector_constituents` and `sector_performance`, use exactly one:
 Prefer direct `sector_name` first.
 Treat `sector_id` as an internal identifier that should only be reused after the backend has already returned it.
 Only call `resolve_sector` when the sector name is fuzzy, ambiguous, or direct sector lookup fails.
+If the user gives a theme word such as `算力`, `机器人`, or `AI`, prefer `resolve_sector` before calling a sector detail product.
 
 ### Allowed Date Mode For News Products
 
@@ -342,6 +343,7 @@ Important notes:
 
 - This is based on the `chip-peak` path
 - Server-side default display window is approximately `120` bars unless overridden
+- This payload is relatively heavy; prefer a lighter product unless chip distribution itself is the question
 
 ### `price_levels`
 
@@ -437,6 +439,11 @@ Output keys:
 - `historical_reports`
 - `unusual_movements`
 
+Important notes:
+
+- This is a heavy context bundle intended for movement-analysis preparation
+- Do not use it when the user only needs one raw data product
+
 ### `resolve_sector`
 
 Purpose:
@@ -457,6 +464,7 @@ Important notes:
 
 - Use this only as a resolver fallback, not as the default first hop for every sector query
 - The returned `sector_id` is an internal identifier for follow-up calls
+- This is the preferred first hop for fuzzy theme words such as `算力`
 
 ### `similar_sectors`
 
@@ -477,6 +485,7 @@ Important notes:
 
 - Use this when the sector name is fuzzy or ambiguous
 - The returned `sector_id` is an internal identifier for follow-up calls
+- Prefer `resolve_sector` when you want one best match; use `similar_sectors` when you need multiple deterministic candidates
 
 ### `sector_constituents`
 
@@ -626,3 +635,4 @@ Important notes:
 
 - This is a flow, not a raw data product
 - It internally uses fixed deterministic products
+- Do not use it for simple data fetching; prefer the narrower raw-data products first

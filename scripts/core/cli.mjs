@@ -26,6 +26,9 @@ export function parseCommonArgs({ allowPositionals = false, options = {} } = {})
   });
 }
 
+// Public model-facing stock identifier modes:
+// 1. instrument-name
+// 2. instrument-id + exchange-id
 export function buildInstrumentQuery(values) {
   return cleanObject({
     instrument_id: values["instrument-id"],
@@ -34,6 +37,9 @@ export function buildInstrumentQuery(values) {
   });
 }
 
+// Public model-facing sector inputs:
+// 1. sector-name / sector-id for detail products
+// 2. query for resolver products
 export function buildSectorQuery(values) {
   return cleanObject({
     sector_id: values["sector-id"],
@@ -42,6 +48,9 @@ export function buildSectorQuery(values) {
   });
 }
 
+// Keep the public date surface narrow.
+// We always expose target_date (+ optional visual_days_len) and hide
+// start_date/end_date/is_realtime from the model side.
 export function buildWindowQuery(values) {
   const targetDate = values["target-date"];
   const visualDaysLen = toInteger(values["visual-days-len"]);

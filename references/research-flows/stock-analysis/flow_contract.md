@@ -60,7 +60,7 @@ The methodology expects these data capabilities:
 
 ## Current Project Readiness
 
-### Already available in `lushan_finance`
+### Already available in `shumen_finance`
 
 - `instrument_profile`
 - `price_snapshot`
