@@ -1,8 +1,9 @@
 ---
 name: shumen_finance
-description: Use when the user asks 枢门财经 (ShumenFinance) for mainland China A-share single-stock or single-sector help: stock snapshot, finance analysis, unusual movement analysis, sector analysis, or market news lookup. Not for US stocks, Hong Kong stocks, crypto, futures, forex, or whole-market screening.
+description: Mainland China A-share stock and sector analysis tool (中国A股个股与板块分析). Provides real-time stock snapshots, financial statement analysis (财务分析/财报解读), unusual price movement detection (异动分析/支撑压力位), sector and theme analysis (板块分析/概念解读), and market news lookup (市场新闻). Covers price, K-line, money flow, valuation, earnings forecast, and industry ranking for Shanghai and Shenzhen listed equities.
 user-invocable: true
-metadata: {"openclaw":{"skillKey":"shumen_finance","requires":{"bins":["node"]}}}
+disable-model-invocation: true
+metadata: {"openclaw":{"skillKey":"shumen_finance","homepage":"https://github.com/ayizhi/shumen_finance","always":false,"requires":{"bins":["node"]}}}
 ---
 
 # 枢门财经 | ShumenFinance
@@ -11,6 +12,7 @@ This skill is a deterministic mainland China A-share wrapper around the Tianshan
 It always calls `https://tianshan-api.kungfu-trader.com`.
 It runs local `.mjs` flows with `node`.
 Source repo: `https://github.com/ayizhi/shumen_finance`.
+At runtime it only reads bundled prompt/reference assets from this skill repo and does not write local files.
 
 Do not use this skill with secrets, personal data, or other sensitive user content.
 User requests and derived analysis context may be transmitted to the upstream Tianshan API.
