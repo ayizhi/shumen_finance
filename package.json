@@ -1,0 +1,8 @@
+{
+  "name": "lushan_finance",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "find scripts -name '*.mjs' -print0 | xargs -0 -n1 node --check"
+  }
+}
