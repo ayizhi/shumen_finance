@@ -1,6 +1,7 @@
 # Data Products Schema
 
-This file is the machine-facing contract for the skill.
+This file is the machine-facing internal contract for the skill.
+It is not the primary user-facing routing surface.
 
 Use it to decide:
 
@@ -8,6 +9,9 @@ Use it to decide:
 - which parameters are allowed
 - which parameters are intentionally hidden
 - what output shape to expect
+
+Use [SKILL.md](/Users/zhangyizhi/Project/tianshan-quant-skills/shumen_finance/SKILL.md) for high-level user intent routing first.
+Use this file only after the intent has already been determined.
 
 ## Global Rules
 

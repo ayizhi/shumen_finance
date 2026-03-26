@@ -1,22 +1,21 @@
 ---
 name: shumen_finance
-description: Use when the user asks 枢门财经 (ShumenFinance) for deterministic China A-share / A股 single-stock data, single-sector data, movement tracking, finance report status, finance basic indicators, valuation detail, profit forecast, industry rank, concept tags, money flow, sector candidate lookup, sector constituents, sector performance, finance-analysis context, unusual-movement context, price snapshots, K-line bar series, finance context, holder changes, chip distribution, resistance levels, or important market news.
+description: Use when the user asks 枢门财经 (ShumenFinance) for mainland China A-share single-stock or single-sector help: stock snapshot, finance analysis, unusual movement analysis, sector analysis, or market news lookup. Not for US stocks, Hong Kong stocks, crypto, futures, forex, or whole-market screening.
 user-invocable: true
 metadata: {"openclaw":{"skillKey":"shumen_finance","requires":{"bins":["node"]}}}
 ---
 
 # 枢门财经 | ShumenFinance
 
-This skill powers 枢门财经 (ShumenFinance) as a deterministic data-and-analysis wrapper around the Tianshan APIs.
-It is only for mainland China A-shares.
+This skill is a deterministic mainland China A-share wrapper around the Tianshan APIs.
 It always calls `https://tianshan-api.kungfu-trader.com`.
 
-Use it as an operation manual.
-Do not invent APIs, hidden parameters, or unsupported market scopes.
+Treat this file as the high-level routing guide.
+Do not treat it as an API catalog.
 
-## Core Rules
+## Scope
 
-- China A-share only
+- Mainland China A-shares only
 - Single stock or single sector only
 - No whole-market screening
 - Not for US stocks
@@ -24,129 +23,88 @@ Do not invent APIs, hidden parameters, or unsupported market scopes.
 - Not for cryptocurrencies
 - Not for futures or forex
 - No free-form SQL
-- Always use the fixed product names below
-- Only use the public parameter contract documented here
-- Do not invent extra parameters
-- Do not ask for or pass a base URL
-- Do not ask for or pass any API key or token
-- Do not expose hidden server parameters such as `start_date`, `end_date`, `is_realtime`, `limit`, `days`, or `periods`
-- Deterministic HTTP fetch first, analysis later
+- No user-facing base URL, API key, or token
 
-## Routing Rules
+## Public Intents
 
-Pick exactly one product or flow based on the user's intent.
+Route the user into one of these five intent families.
+Do not expose internal product names unless needed for implementation.
 
-If the user asks about non-A-share assets, do not use this skill.
+### 1. Stock Snapshot
 
-- User wants code or exchange resolution:
-  Use `instrument_profile`
-- User wants current price status, latest涨跌, or a compact period-change summary:
-  Use `price_snapshot`
-- User wants recent N-day K-line data or a raw bar sequence:
-  Use `bar_series`
-- User wants broad finance or valuation context:
-  Use `finance_context`
-- User wants the prompt-ready backend bundle for finance report analysis:
-  Use `finance_analysis_context`
-- User wants report publication readiness or a recent report timeline:
-  Use `finance_report_status`
-- User wants structured quarterly financial indicators:
-  Use `finance_basic_indicators`
-- User wants detailed valuation percentiles or model-based valuation context:
-  Use `finance_valuation_detail`
-- User wants analyst profit forecast, target-price range, or recent coverage context:
-  Use `finance_profit_forecast`
-- User wants industry percentile / rank context for one stock:
-  Use `finance_industry_rank`
-- User wants top-holder changes:
-  Use `holder_context`
-- User wants chip distribution / cost-distribution data:
-  Use `chip_distribution`
-- User wants resistance or key price levels:
-  Use `price_levels`
-- User wants concept tags for one stock:
-  Use `instrument_concepts`
-- User wants recent money flow for one stock:
-  Use `money_flow`
-- User wants the deterministic no-image context bundle for unusual movement analysis:
-  Use `unusual_movement_context`
-- User gives a fuzzy or ambiguous sector / concept / theme name and you need one best resolved match:
-  Use `resolve_sector`
-- User gives an inexact sector / concept / theme name and needs deterministic candidates:
-  Use `similar_sectors`
-- User wants one resolved sector's constituents:
-  Use `sector_constituents`
-- User wants one resolved sector's performance summary:
-  Use `sector_performance`
-- User wants important daily news batches:
-  Use `important_news`
-- User wants intraday high-frequency news around a date/time:
-  Use `high_frequency_news`
-- User wants unusual movement analysis:
-  Use `movement_analysis`
-- User wants deep research on one concrete A-share stock:
-  Consult `references/research-flows/stock-analysis/` as the methodology source
-- User wants deep research on one A-share industry / concept / theme / sector:
-  Consult `references/research-flows/sector-analysis/` as the methodology source
+Use when the user wants one A-share stock's current state, recent走势, K-line window, concepts, money flow, holders, valuation context, or other narrow deterministic data.
 
-## Public Products And Flows
+Default behavior:
 
-- `instrument_profile`
-- `price_snapshot`
-- `bar_series`
-- `finance_context`
-- `finance_analysis_context`
-- `finance_report_status`
-- `finance_basic_indicators`
-- `finance_valuation_detail`
-- `finance_profit_forecast`
-- `finance_industry_rank`
-- `holder_context`
-- `chip_distribution`
-- `price_levels`
-- `instrument_concepts`
-- `money_flow`
-- `unusual_movement_context`
-- `resolve_sector`
-- `similar_sectors`
-- `sector_constituents`
-- `sector_performance`
-- `important_news`
-- `high_frequency_news`
-- `movement_analysis`
+- Prefer the narrowest data product that answers the question
+- If the stock code is unknown, prefer `instrument_name`
+- If code mode is used, `exchange_id` must be `SSE` or `SZE`
 
-## Documented Research Methodologies
+### 2. Finance Analysis
 
-These are documentation-only flows stored under `references/research-flows/`.
-They are not public executable CLI flows yet.
+Use when the user wants one A-share stock's财务分析,财报状态,财务指标,估值细节,盈利预测, or industry-rank finance context.
 
-- `stock-analysis`
-  Use as the methodology reference when the user asks for deep research on one concrete mainland China A-share stock.
-- `sector-analysis`
-  Use as the methodology reference when the user asks for research on one mainland China A-share industry, concept, theme, or sector.
+Default behavior:
 
-The distinction is strict:
+- Prefer `finance_analysis_context` when the request is full finance analysis
+- Prefer narrower finance products for simple factual questions
 
-- one stock -> `stock-analysis`
-- one industry / concept / sector / theme -> `sector-analysis`
+### 3. Unusual Movement Analysis
 
-If the user asks for whole-market screening, neither documented methodology applies.
+Use when the user wants异动分析,支撑压力位解读,关键价位分析, or the final unusual-movement prompt package.
 
-For sector requests, prefer direct `sector_name` first.
-Treat `sector_id` as an internal identifier that should only be reused after the backend has already returned it.
-Only call `resolve_sector` when the sector name is fuzzy, ambiguous, or direct sector lookup fails.
-If the user says a fuzzy theme word such as `算力`, `机器人`, or `AI`, prefer `resolve_sector` first before calling sector detail products.
+Default behavior:
 
-## Public Input Contract
+- For final analysis, use `movement_analysis`
+- For pre-analysis deterministic context only, use `unusual_movement_context`
 
-### Instrument Mode
+### 4. Sector Analysis
 
-For single-stock products, use exactly one mode:
+Use when the user asks about one A-share industry, concept, theme, or sector.
+
+Default behavior:
+
+- If the user gives a standard sector name, sector detail products may use `sector_name` directly
+- If the user gives a fuzzy theme word such as `算力`, `机器人`, or `AI`, resolve it first
+- Treat `sector_id` as an internal identifier, not a user-facing requirement
+
+### 5. News Lookup
+
+Use when the user explicitly asks for market news itself.
+
+Default behavior:
+
+- Use `important_news` for date-level important news batches
+- Use `high_frequency_news` for minute/second-granularity intraday news
+- For stock, finance, movement, or sector analysis, news should usually be an internal supplement, not the first hop
+
+## Intent Routing
+
+Pick one default route from the list below.
+
+- User asks "这只股票现在怎么样 / 最近走势 / 看看价格":
+  Route to `Stock Snapshot`
+- User asks "分析财报 / 财务怎么样 / 估值怎么看":
+  Route to `Finance Analysis`
+- User asks "异动 / 支撑位 / 压力位 / 突破 / 关键位":
+  Route to `Unusual Movement Analysis`
+- User asks "分析白酒 / 算力 / 某个板块 / 某个概念":
+  Route to `Sector Analysis`
+- User asks "今天有什么新闻 / 某个时点附近的高频新闻":
+  Route to `News Lookup`
+
+If the user asks for whole-market screening, do not use this skill.
+
+## Input Rules
+
+### Stock Identification
+
+For single-stock requests, use exactly one:
 
 - `--instrument-name`
 - `--instrument-id` and `--exchange-id`
 
-Never mix both modes in one request.
+Never mix both modes.
 If the stock code is unknown, prefer `--instrument-name`.
 When using code mode, `--exchange-id` must be `SSE` or `SZE`.
 
@@ -157,27 +115,24 @@ For stock products and flows, use:
 - `--target-date`
 - optional `--visual-days-len`
 
-### Sector Query Mode
+### Sector Mode
 
-For sector resolving or candidate lookup, use:
+- For `resolve_sector` and `similar_sectors`, use `--query`
+- For sector detail products, use exactly one:
+  - `--sector-name`
+  - `--sector-id`
 
-- `--query`
+Prefer `--sector-name`.
+Only reuse `--sector-id` after the backend has already returned it.
 
-For resolved sector products, use exactly one:
+### News Mode
 
-- `--sector-name`
-- `--sector-id`
-
-### News Date Mode
-
-For high-frequency news, use:
-
-- `--target-date`
-- optional `--target-time`
+- `important_news`: `--target-date`
+- `high_frequency_news`: `--target-date` and optional `--target-time`
 
 ### Hidden Parameters
 
-Do not pass these from the model side:
+Do not generate or expose these from the model side:
 
 - `start_date`
 - `end_date`
@@ -186,26 +141,50 @@ Do not pass these from the model side:
 - `days`
 - `periods`
 
-They are intentionally hidden to keep the request surface controlled.
+## Internal Building Blocks
+
+The internal deterministic product contract lives here:
+
+- [data_products.md](/Users/zhangyizhi/Project/tianshan-quant-skills/shumen_finance/references/schemas/data_products.md)
+
+Use that file only when you need exact internal product names, allowed parameter shapes, or output keys.
+Do not dump that whole catalog into the user-facing reasoning path by default.
+
+## Research Methodologies
+
+Documented research methods live here:
+
+- [README.md](/Users/zhangyizhi/Project/tianshan-quant-skills/shumen_finance/references/research-flows/README.md)
+- [stock-analysis](/Users/zhangyizhi/Project/tianshan-quant-skills/shumen_finance/references/research-flows/stock-analysis)
+- [sector-analysis](/Users/zhangyizhi/Project/tianshan-quant-skills/shumen_finance/references/research-flows/sector-analysis)
+
+Use them as methodology references for deep research.
+They are not public CLI entrypoints yet.
 
 ## Standard Commands
 
-### Direct Stock Data Request
+### Stock Snapshot
 
 ```bash
 node scripts/flows/run_data_request.mjs --product price_snapshot --instrument-name 贵州茅台 --target-date 20260301
 ```
 
-### Direct Sector Data Request
+### Finance Analysis Context
 
 ```bash
-node scripts/flows/run_data_request.mjs --product sector_performance --sector-name 白酒 --target-date 20260301
+node scripts/flows/run_data_request.mjs --product finance_analysis_context --instrument-name 贵州茅台 --target-date 20260301
 ```
 
-### Resolve Sector Name
+### Resolve Sector
 
 ```bash
 node scripts/flows/run_data_request.mjs --product resolve_sector --query 算力
+```
+
+### Sector Detail
+
+```bash
+node scripts/flows/run_data_request.mjs --product sector_performance --sector-name 白酒 --target-date 20260301
 ```
 
 ### Movement Analysis
@@ -214,192 +193,8 @@ node scripts/flows/run_data_request.mjs --product resolve_sector --query 算力
 node scripts/flows/run_movement_analysis.mjs --instrument-name 贵州茅台 --target-date 20260301 --visual-days-len 100
 ```
 
-## Product Usage Guide
-
-### `instrument_profile`
-
-Use when:
-
-- The user gives only a stock name
-- You need to normalize a stock into `instrument_id + exchange_id`
-
-### `price_snapshot`
-
-Use when:
-
-- The user asks for current price status
-- The user asks how much the stock moved from a target date to now
-- The user needs a compact price summary, not a full K-line window
-
-Do not use when:
-
-- The user wants a full K-line sequence
-- The user wants technical analysis over many bars
-
-### `bar_series`
-
-Use when:
-
-- The user asks for recent N-day K-lines
-- The user wants raw bar data for technical analysis
-- The user wants a fixed historical window
-
-### `finance_context`
-
-Use when:
-
-- The user wants broad financial data, valuation context, dividend context, or report-related context
-
-### `finance_analysis_context`
-
-Use when:
-
-- The user wants the deterministic backend bundle for finance-report analysis
-- A finance-analysis prompt needs prompt-ready `financial_data_text`
-
-### `finance_report_status`
-
-Use when:
-
-- The user asks whether the latest full report is published
-- The user needs a recent report timeline
-
-### `finance_basic_indicators`
-
-Use when:
-
-- The user wants structured quarterly indicators
-- The user needs single-quarter growth, profitability, or basic Dupont blocks
-
-### `finance_valuation_detail`
-
-Use when:
-
-- The user wants detailed valuation percentiles, Graham / DCF / Dupont context, or valuation tips
-
-### `finance_profit_forecast`
-
-Use when:
-
-- The user wants analyst EPS forecast, target-price range, or latest coverage context
-
-### `finance_industry_rank`
-
-Use when:
-
-- The user wants industry percentile context for one stock
-- The user wants dominance, health, or growth scoring inside the stock's industry
-
-### `holder_context`
-
-Use when:
-
-- The user asks about recent holder changes or top-holder comparison
-
-### `chip_distribution`
-
-Use when:
-
-- The user asks where chips are concentrated by distribution
-- The user wants chip peaks or cost-distribution structure
-
-Important default:
-
-- Server-side default window is the chip-peak path, built around roughly `120` bars unless explicitly overridden
-- This payload is relatively heavy; do not use it when a lighter summary product would answer the question
-
-### `price_levels`
-
-Use when:
-
-- The user asks about resistance levels, key levels, or whether price is near a breakout level
-
-Important default:
-
-- This comes from `chip-concentration`
-- Server-side default detection window is roughly `250` trading days unless overridden
-
-### `instrument_concepts`
-
-Use when:
-
-- The user asks which概念板块 a stock belongs to
-
-### `money_flow`
-
-Use when:
-
-- The user asks for recent主力资金流向 or money-flow summary for one stock
-
-### `unusual_movement_context`
-
-Use when:
-
-- The user wants the deterministic context bundle behind unusual movement analysis
-- You need recent trading days, recent prices, long-window highs/lows, support/resistance, and market technical status without building the final prompt package yet
-
-Do not use when:
-
-- The user only wants one raw data product such as price, finance, or money flow
-- The user wants the final prompt package directly; use `movement_analysis` instead
-
-### `similar_sectors`
-
-Use when:
-
-- The user gives a fuzzy sector / concept / theme name and you need deterministic candidates first
-- The user does not know the internal `sector_id`
-
-### `resolve_sector`
-
-Use when:
-
-- The user gives a fuzzy or ambiguous sector / concept / theme name and direct `sector_name` lookup is not reliable
-- You want one best resolved match after a name-based lookup failed
-- The user says a plain theme word like `算力` and you need one backend-resolved sector before calling detail products
-
-### `sector_constituents`
-
-Use when:
-
-- The user wants one sector's constituents
-- The user wants representative stocks inside one resolved sector
-
-Input rule:
-
-- Prefer `sector_name`
-- Only use `sector_id` when it was already returned by a previous backend call such as `resolve_sector` or `similar_sectors`
-
-### `sector_performance`
-
-Use when:
-
-- The user wants one sector's aggregated performance, valuation median, money-flow summary, or leader summary
-
-Input rule:
-
-- Prefer `sector_name`
-- Only use `sector_id` when it was already returned by a previous backend call such as `resolve_sector` or `similar_sectors`
-
-### `important_news`
-
-Use when:
-
-- The user wants important news batches for a trading date
-
-### `high_frequency_news`
-
-Use when:
-
-- The user wants minute-level high-frequency news around a date/time
-
-### `movement_analysis`
-
-Use when:
-
-- The user wants the final unusual-movement prompt package, not just its context bundle
-
-Do not use when:
-
-- The user only wants prices, levels, money flow, or finance data
-- The user only wants the pre-analysis context bundle; use `unusual_movement_context`
+### News Lookup
+
+```bash
+node scripts/flows/run_data_request.mjs --product important_news --target-date 20260301
+```
